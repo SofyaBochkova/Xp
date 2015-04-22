@@ -1,0 +1,19 @@
+SET TERM ^ ;
+
+CREATE OR ALTER procedure Top_10_dir
+returns (NAME char(30), SURNAME char(30))
+as
+begin
+	for select first 10 MAN.NAME,MAN.SURNAME from MAN,PART where MAN.MAN_ID=PART.MAN_ID and PART.ROLE_ID=1 and PART.FILM_ID
+	in (select first 10 PRODUCTION.FILM_ID
+	from COMPANY,PRODUCTION,PART where COMPANY.COM_ID =
+	PRODUCTION.COM_ID and ROLE_ID=3 and PRODUCTION.FILM_ID=PART.FILM_ID group by PRODUCTION.FILM_ID
+	order by sum(MONEY_OF_PROKAT)/sum(GANORAR) desc)
+	into  :NAME, :SURNAME
+	do
+		suspend;
+
+end
+^
+
+SET TERM ; ^
