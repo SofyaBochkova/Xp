@@ -1,0 +1,20 @@
+SET TERM ^ ;
+
+CREATE OR ALTER procedure Top_film
+returns (FILM char(60),NAME char(30),SURNAME char(30),COMPANY char(20))
+as
+begin
+	for select first 1 FILM.NAME,MAN.NAME,MAN.SURNAME,COMPANY_PROKAT from FILM,MAN,PART,COMPANY,PRODUCTION where 
+        MAN.MAN_ID=PART.MAN_ID and PART.ROLE_ID=1 and PART.FILM_ID
+	in (select first 10 PRODUCTION.FILM_ID
+	from COMPANY,PRODUCTION,PART where COMPANY.COM_ID =
+	PRODUCTION.COM_ID and ROLE_ID=3 and PRODUCTION.FILM_ID=PART.FILM_ID group by PRODUCTION.FILM_ID
+	order by sum(MONEY_OF_PROKAT)/sum(GANORAR) desc)
+	into :FILM, :NAME, :SURNAME, :COMPANY
+	do
+			suspend;
+
+end
+^
+
+SET TERM ; ^
